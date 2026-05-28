@@ -1,5 +1,7 @@
-# Xcode
+# macOS
 .DS_Store
+
+# Xcode user-specific files
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -8,24 +10,31 @@
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-xcuserdata
+*.xcworkspace/xcuserdata/
+xcuserdata/
+*.xcuserdatad/
+*.xcuserstate
 *.xccheckout
 *.moved-aside
-DerivedData
+
+# Xcode build artifacts
+DerivedData/
+build/
 *.hmap
 *.ipa
-*.xcuserstate
+*.dSYM.zip
+*.dSYM
+
+# Xcode workspace and project metadata
 *.xcodeproj/project.xcworkspace
 *.xcodeproj/xcuserdata
 
 # Swift Package Manager
 .build/
-Package.resolved
+.swiftpm/
 
-# CocoaPods
+# Dependency managers
 Pods/
-
-# Carthage
 Carthage/Build/
 
 # Fastlane
@@ -33,6 +42,11 @@ fastlane/report.xml
 fastlane/screenshots
 fastlane/test_output
 
-# macOS
+# Local environment/config
+.env
+.env.*
+*.local
+
+# Editor temp files
 *.swp
 *.swo
