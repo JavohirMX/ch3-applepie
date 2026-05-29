@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var path: [AppRoute] = []
+    @State private var chatStore = ChatStore()
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -16,12 +17,17 @@ struct ContentView: View {
                 .navigationDestination(for: AppRoute.self) { route in
                     switch route {
                     case .recentChats(let category):
-                        RecentChatsListView(category: category, chats: AppMockData.chats(for: category))
+                        RecentChatsListView(path: $path, category: category)
+                    case .transportModePicker:
+                        TransportModePickerView(path: $path)
+                    case .contextForm(let formType):
+                        CategoryContextFormView(path: $path, formType: formType)
                     case .transcript(let chat):
-                        LiveTranscriptView(chat: chat)
+                        ConversationView(chat: chat)
                     }
                 }
         }
+        .environment(chatStore)
     }
 }
 

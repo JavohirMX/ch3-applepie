@@ -7,8 +7,8 @@ struct HomeView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
                 HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Hello, Hans!")
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Hello, Anna!")
                             .font(AppTypography.greeting)
                             .foregroundStyle(AppColors.textPrimary)
                             .lineLimit(1)
@@ -18,10 +18,10 @@ struct HomeView: View {
                             .foregroundStyle(AppColors.textSecondary)
                     }
                     Spacer()
-                    Circle()
-                        .fill(Color.gray.opacity(0.4))
-                        .frame(width: 42, height: 42)
-                        .padding(.top, 8)
+                    Image(systemName: "person.crop.circle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(Color.gray.opacity(0.45))
+                        .padding(.top, 2)
                 }
                 .padding(.bottom, 4)
 
@@ -41,6 +41,6 @@ struct HomeView: View {
             .padding(.top, 10)
             .padding(.bottom, 30)
         }
-        .background(AppColors.background.ignoresSafeArea())
+        .background(Color.white.ignoresSafeArea())
     }
 }

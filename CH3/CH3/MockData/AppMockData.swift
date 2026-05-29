@@ -10,70 +10,48 @@ enum AppMockData {
 
     static let recentChatsByCategory: [CategoryType: [RecentChat]] = [
         .hotel: [
-            RecentChat(category: .hotel, title: "Famous Hotel", subtitle: "Kuta, Bali", dateText: "Jan 7, 2026"),
-            RecentChat(category: .hotel, title: "Sunrise Resort", subtitle: "Nusa Dua, Bali", dateText: "Jan 6, 2026"),
-            RecentChat(category: .hotel, title: "Kuta Plaza", subtitle: "Kuta, Bali", dateText: "Jan 5, 2026"),
-            RecentChat(category: .hotel, title: "Ocean Villa", subtitle: "Uluwatu, Bali", dateText: "Jan 4, 2026")
+            RecentChat(category: .hotel, title: "Famous Hotel", subtitle: "Kuta, Bali", dateText: "Jan 7, 2026", countryCode: "ID"),
+            RecentChat(category: .hotel, title: "Hyatt Regency", subtitle: "Sanur, Bali", dateText: "Jan 6, 2026", countryCode: "ID"),
+            RecentChat(category: .hotel, title: "Kuta Plaza", subtitle: "Kuta, Bali", dateText: "Jan 5, 2026", countryCode: "ID"),
+            RecentChat(category: .hotel, title: "Ocean Villa", subtitle: "Uluwatu, Bali", dateText: "Jan 4, 2026", countryCode: "ID")
         ],
         .transport: [
-            RecentChat(category: .transport, title: "Airport Check-In", subtitle: "Ngurah Rai Airport", dateText: "Jan 7, 2026"),
-            RecentChat(category: .transport, title: "Train Ticket Desk", subtitle: "Jakarta Station", dateText: "Jan 6, 2026"),
-            RecentChat(category: .transport, title: "Taxi Pickup", subtitle: "City Center", dateText: "Jan 5, 2026"),
-            RecentChat(category: .transport, title: "Bus Terminal", subtitle: "Ubud Route", dateText: "Jan 4, 2026")
+            RecentChat(category: .transport, title: "Trans Metro Dewata", subtitle: "Kuta, Indonesia", dateText: "Jan 7, 2026", countryCode: "ID"),
+            RecentChat(category: .transport, title: "Japan Bus Line", subtitle: "Tokyo, Japan", dateText: "Jan 6, 2026", countryCode: "JP"),
+            RecentChat(category: .transport, title: "CDG Airport", subtitle: "Paris, France", dateText: "Jan 5, 2026", countryCode: "FR"),
+            RecentChat(category: .transport, title: "Sydney Cab", subtitle: "Sydney, Australia", dateText: "Jan 4, 2026", countryCode: "AU")
         ],
         .store: [
-            RecentChat(category: .store, title: "Grocery Checkout", subtitle: "Local Market", dateText: "Jan 7, 2026"),
-            RecentChat(category: .store, title: "Clothing Store", subtitle: "Beachwalk Mall", dateText: "Jan 6, 2026"),
-            RecentChat(category: .store, title: "Pharmacy Counter", subtitle: "Kuta Main Road", dateText: "Jan 5, 2026"),
-            RecentChat(category: .store, title: "Souvenir Shop", subtitle: "Ubud Center", dateText: "Jan 4, 2026")
+            RecentChat(category: .store, title: "Trans Metro Dewata", subtitle: "Kuta, Indonesia", dateText: "Jan 7, 2026", countryCode: "ID"),
+            RecentChat(category: .store, title: "Beachwalk Mall", subtitle: "Kuta, Bali", dateText: "Jan 6, 2026", countryCode: "ID"),
+            RecentChat(category: .store, title: "Local Market", subtitle: "Ubud, Bali", dateText: "Jan 5, 2026", countryCode: "ID"),
+            RecentChat(category: .store, title: "Pharmacy Counter", subtitle: "Denpasar, Bali", dateText: "Jan 4, 2026", countryCode: "ID")
         ],
         .misc: [
-            RecentChat(category: .misc, title: "Directions Help", subtitle: "Tourist Info Point", dateText: "Jan 7, 2026"),
-            RecentChat(category: .misc, title: "Restaurant Request", subtitle: "Jimbaran Beach", dateText: "Jan 6, 2026"),
-            RecentChat(category: .misc, title: "Emergency Support", subtitle: "Hospital Desk", dateText: "Jan 5, 2026"),
-            RecentChat(category: .misc, title: "Public Service", subtitle: "City Office", dateText: "Jan 4, 2026")
+            RecentChat(category: .misc, title: "CDG Airport", subtitle: "Paris, France", dateText: "Sep 17, 2023", countryCode: "FR"),
+            RecentChat(category: .misc, title: "Japan Bus Line", subtitle: "Tokyo, Japan", dateText: "Aug 12, 2023", countryCode: "JP"),
+            RecentChat(category: .misc, title: "Sydney Cab", subtitle: "Sydney, Australia", dateText: "Jul 3, 2023", countryCode: "AU"),
+            RecentChat(category: .misc, title: "Tourist Info", subtitle: "Bali, Indonesia", dateText: "Jun 1, 2023", countryCode: "ID")
         ]
     ]
 
-    static let transcriptMessages: [ChatMessage] = [
-        ChatMessage(text: "Hi, i'm deaf. Can you speak to my phone please?", isUser: true, hasAudioIcon: true),
-        ChatMessage(text: "Sure. What can i help you?", isUser: false, hasAudioIcon: false),
-        ChatMessage(text: "Can i have a window seat please?", isUser: true, hasAudioIcon: true),
-        ChatMessage(text: "Yes, sure. We have one window seat left", isUser: false, hasAudioIcon: false),
-        ChatMessage(text: "Thank you. What is my seat number?", isUser: true, hasAudioIcon: true)
-    ]
+    static let transcriptMessages: [ChatMessage] = {
+        let base = Date()
+        let calendar = Calendar.current
+        return [
+            ChatMessage.user("Hi, i'm deaf. Can you speak to my phone please?", timestamp: calendar.date(byAdding: .minute, value: -5, to: base)),
+            ChatMessage.other("Sure. What can i help you?", timestamp: calendar.date(byAdding: .minute, value: -4, to: base)),
+            ChatMessage.user("Can i have a window seat please?", timestamp: calendar.date(byAdding: .minute, value: -3, to: base)),
+            ChatMessage.other("Yes, sure. We have one window seat left", timestamp: calendar.date(byAdding: .minute, value: -2, to: base)),
+            ChatMessage.user("Thank you. What is my seat number?", timestamp: calendar.date(byAdding: .minute, value: -1, to: base))
+        ]
+    }()
 
     static let transcriptSuggestions: [PhraseSuggestion] = [
         PhraseSuggestion(text: "Perfect. Thank you"),
         PhraseSuggestion(text: "Thank you. What is my seat number?"),
         PhraseSuggestion(text: "Can i get a seat near the toilet?"),
         PhraseSuggestion(text: "Can i bring this suitcase to the cabin?")
-    ]
-
-    static let storeGroups: [PhraseGroup] = [
-        PhraseGroup(title: "Checkout", phrases: [
-            "How much is this item?",
-            "Can i pay by card?",
-            "Do you have a receipt?"
-        ]),
-        PhraseGroup(title: "Help", phrases: [
-            "Can you show me where this is?",
-            "Do you have a different size?",
-            "Can i exchange this later?"
-        ])
-    ]
-
-    static let miscGroups: [PhraseGroup] = [
-        PhraseGroup(title: "Essentials", phrases: [
-            "Please call a taxi for me.",
-            "Can you write that down?",
-            "I need help with directions."
-        ]),
-        PhraseGroup(title: "Recent", phrases: [
-            "Where is the nearest pharmacy?",
-            "Can you speak more slowly?",
-            "Thank you for your help."
-        ])
     ]
 
     static func chats(for category: CategoryType) -> [RecentChat] {

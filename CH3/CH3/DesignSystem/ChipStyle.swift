@@ -1,20 +1,26 @@
 import SwiftUI
 
-struct SuggestionChipStyle: ViewModifier {
+struct SuggestionPillStyle: ViewModifier {
+    let theme: CategoryTheme
+
     func body(content: Content) -> some View {
         content
-            .font(.system(size: 22, weight: .medium, design: .rounded))
-            .foregroundStyle(Color(red: 0.39, green: 0.44, blue: 0.86))
+            .font(.system(size: 16, weight: .medium, design: .rounded))
+            .foregroundStyle(theme.primary)
+            .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.vertical, 14)
             .background(.white)
-            .clipShape(Capsule())
-            .shadow(color: .black.opacity(0.08), radius: 6, x: 0, y: 3)
+            .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .stroke(theme.primary.opacity(0.25), lineWidth: 1)
+            )
     }
 }
 
 extension View {
-    func suggestionChip() -> some View {
-        modifier(SuggestionChipStyle())
+    func suggestionPill(theme: CategoryTheme) -> some View {
+        modifier(SuggestionPillStyle(theme: theme))
     }
 }

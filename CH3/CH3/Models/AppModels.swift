@@ -18,27 +18,34 @@ struct CategoryCardModel: Identifiable, Hashable {
 }
 
 struct RecentChat: Identifiable, Hashable {
-    let id = UUID()
+    let id: UUID
     let category: CategoryType
     let title: String
     let subtitle: String
     let dateText: String
-}
+    let countryCode: String
+    var isNewConversation: Bool
 
-struct ChatMessage: Identifiable, Hashable {
-    let id = UUID()
-    let text: String
-    let isUser: Bool
-    let hasAudioIcon: Bool
+    init(
+        id: UUID = UUID(),
+        category: CategoryType,
+        title: String,
+        subtitle: String,
+        dateText: String,
+        countryCode: String = "ID",
+        isNewConversation: Bool = false
+    ) {
+        self.id = id
+        self.category = category
+        self.title = title
+        self.subtitle = subtitle
+        self.dateText = dateText
+        self.countryCode = countryCode
+        self.isNewConversation = isNewConversation
+    }
 }
 
 struct PhraseSuggestion: Identifiable, Hashable {
     let id = UUID()
     let text: String
-}
-
-struct PhraseGroup: Identifiable, Hashable {
-    let id = UUID()
-    let title: String
-    let phrases: [String]
 }
