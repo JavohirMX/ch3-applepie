@@ -35,7 +35,31 @@ struct RecentChatsListView: View {
                     .foregroundStyle(AppColors.textSecondary)
                     .padding(.bottom, 4)
 
-                if filteredChats.isEmpty {
+                if chatStore.isLoading {
+                    HStack {
+                        Spacer()
+                        ProgressView()
+                            .padding(.vertical, 40)
+                        Spacer()
+                    }
+                } else if let error = chatStore.errorMessage {
+                    VStack(spacing: 8) {
+                        Image(systemName: "wifi.slash")
+                            .font(.system(size: 28))
+                            .foregroundStyle(AppColors.textSecondary)
+                        Text(error)
+                            .font(AppTypography.caption)
+                            .foregroundStyle(AppColors.textSecondary)
+                            .multilineTextAlignment(.center)
+                        Button("Retry") {
+                            Task { await chatStore.loadChats(for: category) }
+                        }
+                        .buttonStyle(.borderedProminent)
+                        .tint(theme.primary)
+                    }
+                    .padding(.vertical, 48)
+                    .frame(maxWidth: .infinity)
+                } else if filteredChats.isEmpty {
                     emptyState
                 } else {
                     ForEach(filteredChats) { chat in
@@ -52,9 +76,13 @@ struct RecentChatsListView: View {
         .background(AppColors.background.ignoresSafeArea())
         .navigationTitle(category.rawValue)
         .navigationBarTitleDisplayMode(.large)
-//        .toolbarBackground(AppColors.background, for: .navigationBar)
-//        .toolbarBackground(.visible, for: .navigationBar)
         .searchable(text: $searchText, prompt: "Search")
+        .refreshable {
+            await chatStore.loadChats(for: category)
+        }
+        .task {
+            await chatStore.loadChats(for: category)
+        }
         .toolbar {
             DefaultToolbarItem(kind: .search, placement: .bottomBar)
             ToolbarSpacer(.flexible, placement: .bottomBar)
