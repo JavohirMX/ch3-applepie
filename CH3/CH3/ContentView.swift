@@ -14,18 +14,18 @@ struct ContentView: View {
     var body: some View {
         NavigationStack(path: $path) {
             HomeView(categories: AppMockData.categories)
-                .navigationDestination(for: AppRoute.self) { route in
-                    switch route {
-                    case .recentChats(let category):
-                        RecentChatsListView(path: $path, category: category)
-                    case .transportModePicker:
-                        TransportModePickerView(path: $path)
-                    case .contextForm(let formType):
-                        CategoryContextFormView(path: $path, formType: formType)
-                    case .transcript(let chat):
-                        ConversationView(chat: chat)
-                    }
-                }
+//                .navigationDestination(for: AppRoute.self) { route in
+//                    switch route {
+//                    case .recentChats(let category):
+//                        RecentChatsListView(path: $path, category: category)
+//                    case .transportModePicker:
+//                        TransportModePickerView(path: $path)
+//                    case .contextForm(let formType):
+//                        CategoryContextFormView(path: $path, formType: formType)
+//                    case .transcript(let chat):
+//                        ConversationView(chat: chat)
+//                    }
+//                }
         }
         .environment(chatStore)
     }

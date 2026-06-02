@@ -24,7 +24,6 @@ struct ConversationView: View {
 
             ZStack {
                 Color(.systemGray6).ignoresSafeArea()
-
                 VStack(spacing: 0) {
                     ScrollViewReader { proxy in
                         ScrollView {
