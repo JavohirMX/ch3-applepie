@@ -66,7 +66,6 @@ struct ConfirmationScreenView: View {
                         .frame(width: .infinity, height: 50)
                         .overlay(Text("Confirm").foregroundColor(.white).font(.title2))
                     Button("I want to edit this booking"){
-                        
                     }
                 }.padding(20)
                 .background(Color(.systemGray5)
