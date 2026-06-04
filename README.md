@@ -1,170 +1,158 @@
 # Conversa
 
-**Your AI communication companion for accessible travel**
+**AI-powered communication tool for deaf and hard-of-hearing travelers at airports**
 
 ![Platform](https://img.shields.io/badge/platform-iOS-blue)
 ![UI](https://img.shields.io/badge/UI-SwiftUI-0A84FF)
 ![Backend](https://img.shields.io/badge/backend-FastAPI-009688)
-![Status](https://img.shields.io/badge/status-integrated-brightgreen)
+![Status](https://img.shields.io/badge/status-in--progress-yellow)
+![Team](https://img.shields.io/badge/team-AERES-orange)
 
-Conversa is an iOS app that helps deaf and hard-of-hearing travelers communicate confidently in real-world situations — transport, hotels, stores, and everyday interactions. It transcribes spoken language in real time, translates and speaks your replies aloud, and uses AI to suggest context-aware responses.
+**Team:** John, Aryan, Hans, Sakina, Aulia
+
+Conversa is an iOS app that enables fast, natural communication between deaf travelers and airport staff. It transcribes speech in real time, uses AI to suggest context-aware replies you can tap to respond, and flips your response to a large readable display for the other person.
 
 ---
 
 ## What Conversa Does
 
+Deaf and hard-of-hearing travelers currently rely on typing notes or text messages to communicate with hearing people at airports. This is **slow, effortful, and frustrating for both sides**.
+
+Conversa removes that friction:
+
 | Feature | How it works |
 |---|---|
-| 🎤 **Live transcription** | The hearing person speaks → their words appear on your screen in real time using on-device speech recognition |
-| 🔊 **Text-to-speech** | You type a response → the app speaks it aloud in the local language with a native accent |
-| 🤖 **AI-powered replies** | An LLM generates context-aware suggestions and replies based on your situation (hotel check-in, taxi ride, shopping, etc.) |
-| 📋 **Context forms** | Before a conversation, tell the AI who you are, where you're staying, what you need — so every reply is relevant |
-| 🌍 **Country-aware** | Language, accent, and suggestions adapt automatically to the country you're in (35+ countries mapped) |
+| **Live transcription** | Airport staff speaks → words appear on screen in real time, large readable font |
+| **AI reply suggestions** | App analyzes context → shows 3-4 natural, tappable reply chips in a slide-up sheet |
+| **Flip Text** | Tap a suggestion → large full-screen display for the other person to read, rotated 180° |
+| **Text-to-speech** | Optional — app reads your reply aloud in a clear voice |
+| **Context setup** | Provide your flight details before arriving at the counter or gate |
+| **Text size control** | Adjustable text sizes for accessibility |
 
 ---
 
-## Typical User Flow
+## Core Use Case: Airport Communication
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                     A Day with Conversa                              │
-└─────────────────────────────────────────────────────────────────────┘
+1. SET UP
+   └── Provide flight context: gate, flight number, destination
 
-1. OPEN THE APP
-   ┌──────────────────────────────────────┐
-   │  Hello, Anna!                        │
-   │  What are your plans today?          │
-   │                                      │
-   │  ┌─────────┐  ┌─────────┐           │
-   │  │ ✈️      │  │ 🛒      │           │
-   │  │Transport│  │  Store  │           │
-   │  └─────────┘  └─────────┘           │
-   │  ┌─────────┐  ┌─────────┐           │
-   │  │ 🛏️      │  │ 💬      │           │
-   │  │  Hotel  │  │  Misc   │           │
-   │  └─────────┘  └─────────┘           │
-   └──────────────────────────────────────┘
-   Device automatically registers with the backend.
+2. STAFF SPEAKS
+   ├── You tap the microphone
+   └── Their words appear on screen in real time, large font
 
-2. TELL THE AI ABOUT YOUR SITUATION (Context Form)
-   ┌──────────────────────────────────────┐
-   │  🛏️                                 │
-   │                                      │
-   │  What hotel are you staying at?      │
-   │  ┌──────────────────────────────┐   │
-   │  │ Famous Hotel                 │   │
-   │  └──────────────────────────────┘   │
-   │                                      │
-   │              [Continue]              │
-   └──────────────────────────────────────┘
-   Answer 5-7 questions about your stay. The AI learns:
-   • Hotel name & booking details
-   • Your preferences (quiet room, no allergies)
-   • What you need help communicating
+3. AI SUGGESTS REPLIES
+   ├── Reply sheet slides up
+   └── Shows 3-4 tappable response chips based on what was said
+       ["Thank you, what time is boarding?",
+        "Is the flight delayed?",
+        "Can you help me find gate B42?"]
 
-   ┌──────────────────────────────────────┐
-   │            🥳                        │
-   │  The AI has learned about you.       │
-   │  Your experience will be smoother    │
-   │  now!                                │
-   │                                      │
-   │           [Continue]                 │
-   └──────────────────────────────────────┘
+4. YOU TAP A REPLY
+   └── Selected text appears in the response area
 
-3. START THE CONVERSATION
-   ┌──────────────────────────────────────┐
-   │  Famous Hotel                        │
-   │                                      │
-   │  You can now start the conversation  │
-   │                                      │
-   └──────────────────────────────────────┘
-   ┌──────────────────────────────────────┐
-   │  ✨ Suggestions                      │
-   │  ┌──────────────────────────────┐   │
-   │  │ Can I have a late checkout?  │   │
-   │  └──────────────────────────────┘   │
-   │  ┌──────────────────────────────┐   │
-   │  │ Is breakfast included?       │   │
-   │  └──────────────────────────────┘   │
-   │  ┌──────────────────────────────┐   │
-   │  │ Where is the nearest pharmacy│   │
-   │  └──────────────────────────────┘   │
-   │                                      │
-   │  ┌──────────────────────────────┐   │
-   │  │ Type a message...            │   │
-   │  └──────────────────────────────┘   │
-   │                                      │
-   │              🎤                      │
-   └──────────────────────────────────────┘
-   AI suggests phrases based on your hotel context.
-
-4. THE HEARING PERSON SPEAKS (Live Transcription)
-   ┌──────────────────────────────────────┐
-   │  Famous Hotel                        │
-   │                                      │
-   │  ┌──────────────────────────────────┐│
-   │  │ 🔴 LISTENING                    ││
-   │  │ "Welcome to Famous Hotel. How   ││
-   │  │  can I help you today?"         ││
-   │  └──────────────────────────────────┘│
-   │                                      │
-   │              ⏹                       │
-   └──────────────────────────────────────┘
-   Tap the mic → it captures what the receptionist says.
-   Live text updates in real time as they speak.
-   Tap stop → the transcript becomes a message, auto-sent to AI.
-
-5. AI SUGGESTS A REPLY
-   ┌──────────────────────────────────────┐
-   │  Famous Hotel                        │
-   │                                      │
-   │  ┌──────────────────────────────┐   │
-   │  │ "Welcome to Famous Hotel.    │   │
-   │  │  How can I help you today?"  │◀── transcribed speech
-   │  └──────────────────────────────┘   │
-   │                                      │
-   │                         ┌──────────┐│
-   │                         │ I have a ││
-   │                         │ reservat-││
-   │                         │ ion under││
-   │                         │ Anna     ││
-   │                         │ Smith.   ││
-   │                         │     🔊   ││── tap to speak aloud
-   │                         └──────────┘│
-   └──────────────────────────────────────┘
-
-6. TAP 🔊 TO SPEAK YOUR REPLY ALOUD
-   The receptionist hears: "I have a reservation under Anna Smith."
-   Spoken in their local language with a natural accent.
-
-7. THE CONVERSATION CONTINUES
-   • Each time they speak → 🎤 transcribes it
-   • Each time AI replies → 🔊 you can speak it aloud
-   • Suggestions update as context changes
-   • Your chat is saved — pick it up later from Recent Chats
+5. DELIVER YOUR RESPONSE
+   ├── Flip Text — rotated full-screen display for staff to read, OR
+   └── Speak — app reads it aloud
 ```
 
 ---
 
-## Current Status
+## Screen Layout
 
-### ✅ Implemented
+**Main screen** — transcription only, always visible:
 
-| Layer | What's built |
-|---|---|
-| **iOS UI** | Home, category cards, recent chats list with search, multi-step context forms (text, yes/no, date inputs), conversation view with bubble chat, suggestions chips, glass-morphism design system |
-| **Backend** | FastAPI with async PostgreSQL, device-based auth via `X-Device-Id`, CRUD for chats/messages, AI reply generation via OpenAI-compatible LLM, form definitions, phrase suggestions |
-| **Integration** | Full API parity — all views load from backend, messages send/receive in real time, chat creation with context answers, pull-to-refresh, error states with retry across all views |
-| **Speech** | On-device STT (SFSpeechRecognizer) with live transcription banner, 35+ country→locale mappings, on-device TTS (AVSpeechSynthesizer) with native voices, auto-send transcript to AI |
-| **Identity** | Keychain-backed UUID, auto-registration on first launch, idempotent backend registration |
+```
+┌──────────────────────────┐
+│                          │
+│  ┌────────────────────┐  │
+│  │                    │  │
+│  │  Transcription     │  │  ← Large text (24pt+)
+│  │  "Your flight      │  │     Latest speech-to-text
+│  │   BA112 is delayed │  │
+│  │   30 minutes..."   │  │
+│  │                    │  │
+│  └────────────────────┘  │
+│                          │
+│              🗣️          │  ← Mic button (tap to listen)
+│                          │
+│     [ 💬 Reply ]         │  ← Opens reply sheet
+└──────────────────────────┘
+```
 
-### 🚧 Coming next
+**Reply sheet** — slides up to respond:
 
-- Speech-to-text language auto-detection
-- Accessibility audit (VoiceOver, Dynamic Type)
-- Offline message queue (send when back online)
-- XCTest unit + UI test suite
-- CI pipeline
+```
+┌──────────────────────────┐
+│  ┌────────────────────┐  │
+│  │ ✏️ Your response...│  │  ← Editable text field
+│  └────────────────────┘  │
+│                          │
+│  ┌────────────────────┐  │
+│  │ Suggestion 1       │  │  ← AI-generated chips
+│  │ Suggestion 2       │  │     Tap to fill the field
+│  │ Suggestion 3       │  │
+│  │ Suggestion 4       │  │
+│  └────────────────────┘  │
+│                          │
+│  [ 🔄 Flip ] [ 🔊 Speak ]│  ← Deliver your response
+└──────────────────────────┘
+```
+
+---
+
+## Features
+
+### Context Setup
+
+Provide your situation before the interaction:
+
+- **Flight details** — Airline, flight number, gate, destination
+- **Quick presets** — Check-in, security, boarding, baggage claim, customer service
+- **Boarding pass scan** — Upload a photo for OCR (coming soon)
+
+### Speech-to-Text
+
+- Real-time transcription with low latency
+- Large readable text display (24pt minimum, adjustable)
+- Works in noisy airport environments
+- Multi-language support
+
+### AI Reply Suggestions
+
+- Analyzes what was just said + your flight context
+- Generates 3-4 natural language response options
+- Presented as tappable chips in the reply sheet
+- Full sentences (not keywords), matching natural speech
+
+### Flip Text
+
+- Shows your response in large, clear font filling the screen
+- Rotated 180° for the other person to read
+- High contrast, easy to read at a glance
+- Tap to dismiss
+
+### Text-to-Speech
+
+- Reads your response aloud in a clear voice
+- Useful when staff can't easily read the screen
+
+### Text Size Control
+
+- Slider or preset sizes (Small / Medium / Large / Extra Large)
+- Persistent across sessions
+- Dynamic Type support (iOS native)
+
+---
+
+## Design Principles
+
+1. **Speed first** — Every interaction faster than typing
+2. **One tap, one action** — Minimize steps to communicate
+3. **Accessibility by default** — Large text, high contrast, VoiceOver
+4. **Privacy conscious** — Conversations are sensitive; minimize data collection
+5. **Works when you need it** — Reliable, clear UX under stress
+6. **Respectful** — Empowers the user
 
 ---
 
@@ -177,6 +165,7 @@ Conversa is an iOS app that helps deaf and hard-of-hearing travelers communicate
 | Networking | Swift Concurrency (`async/await` + `URLSession`) |
 | Speech-to-text | `Speech` framework (`SFSpeechRecognizer`) |
 | Text-to-speech | `AVFAudio` (`AVSpeechSynthesizer`) |
+| Document OCR | VisionKit / `VNDocumentCameraViewController` |
 | Device identity | Keychain Services |
 | Backend framework | FastAPI (Python 3.12+) |
 | Database | PostgreSQL 17 + SQLAlchemy async + Alembic |
@@ -192,59 +181,39 @@ Conversa is an iOS app that helps deaf and hard-of-hearing travelers communicate
 ```bash
 cd backend
 
-# Set LLM credentials
 export LLM_API_KEY=sk-your-key-here
 export LLM_MODEL=gpt-4o-mini
 
-# Start API + PostgreSQL
 docker compose up -d
-
-# Apply migrations
 docker compose exec api alembic upgrade head
 
-# Verify
 curl http://localhost:8000/health
 # → {"status": "ok"}
 ```
 
 ### 2. Add privacy keys in Xcode
 
-The app needs microphone and speech recognition permissions. In Xcode:
-
-1. Open `CH3/CH3.xcodeproj`
-2. Select the **CH3** target → **Info** tab
-3. Add these two entries:
+In Xcode, select the **CH3** target → **Info** tab and add:
 
 | Key | Value |
 |---|---|
 | `Privacy - Speech Recognition Usage Description` | `Conversa uses speech recognition to transcribe what people say to you in real time.` |
 | `Privacy - Microphone Usage Description` | `Conversa needs the microphone to capture speech for live transcription.` |
 
-### 3. Add new source files to the project
-
-In Xcode, right-click the `CH3` group → **Add Files to "CH3"…** and add these folders:
-
-- `CH3/CH3/Networking/`
-- `CH3/CH3/Services/`
-- `CH3/CH3/Models/API/`
-- `CH3/CH3/Helpers/`
-
-Ensure **"Create groups"** is selected and the **CH3** target is checked.
-
-### 4. Run
+### 3. Run
 
 1. Select scheme: **CH3**
 2. Choose an iOS Simulator (iPhone 16+)
 3. Press **Run** (⌘R)
 
-### What happens on first launch
+### First launch
 
 1. App generates a UUID → stores in Keychain
 2. Registers device with backend: `POST /api/users/register`
-3. Home screen shows category cards
-4. Tap a category → chat list loads from backend (empty at first)
-5. Tap compose → fill context form → AI learns about your situation
-6. Start conversing: type messages, use 🎤 for live transcription, 🔊 to speak replies
+3. Enter your flight context
+4. Tap the mic when someone speaks → live transcription appears
+5. Tap Reply → AI suggestions appear → tap one to select
+6. Flip Text or Speak to deliver your response
 
 ---
 
@@ -267,42 +236,22 @@ ch3-applepie/
 │   ├── docker-compose.yml
 │   └── requirements.txt
 │
-├── CH3/                              # iOS app
+├── CH3/                              # iOS app (rebuilding from scratch)
+│   ├── CH3.xcodeproj/
 │   └── CH3/
-│       ├── CH3App.swift              # Entry point + device registration
-│       ├── ContentView.swift         # Root navigation
-│       ├── Networking/               # HTTP layer
-│       │   ├── APIClient.swift       # actor URLSession wrapper
-│       │   ├── APIEnvironment.swift  # Base URL config
-│       │   └── APIError.swift        # Typed error enum
-│       ├── Services/                 # API + platform services
-│       │   ├── DeviceIdentityService.swift  # Keychain UUID
-│       │   ├── UserService.swift            # /api/users/*
-│       │   ├── ChatService.swift            # /api/chats/*
-│       │   ├── MessageService.swift         # /api/messages/*
-│       │   ├── FormService.swift            # /api/forms/* + suggestions
-│       │   └── SpeechService.swift          # SFSpeechRecognizer + AVSpeechSynthesizer
-│       ├── Helpers/
-│       │   └── LocaleMapper.swift     # Country code → speech locale
-│       ├── Models/
-│       │   ├── API/                  # DTOs mirroring backend schemas
-│       │   ├── AppModels.swift       # Domain models
-│       │   ├── ContextFormModels.swift
-│       │   ├── ChatStore.swift       # @Observable state
-│       │   ├── ChatMessageLayout.swift
-│       │   └── AppRoute.swift        # Navigation routes
+│       ├── Networking/               # HTTP layer (APIClient, env, errors)
+│       ├── Services/                 # API + platform (Speech, User, Chat, Form)
+│       ├── Models/                   # DTOs, domain models, state
 │       ├── Features/
-│       │   ├── Home/                 # Home screen
-│       │   ├── RecentChats/          # Chat list + search
-│       │   ├── ContextForm/          # Category form + transport picker
-│       │   ├── Conversation/         # Chat view with STT/TTS
-│       │   └── Shared/               # AI learned modal
-│       ├── Components/               # Reusable UI (bubbles, chips, cards, input bar)
-│       ├── DesignSystem/             # Colors, typography, category themes
-│       └── MockData/                 # Legacy mock data (fallback)
+│       │   ├── Home/                 # Entry point + context setup
+│       │   ├── Transcription/        # Main transcription screen + mic
+│       │   ├── ReplySheet/           # Reply sheet with text field + chips
+│       │   └── FlipText/             # Full-screen flipped text display
+│       ├── Components/               # Reusable UI pieces
+│       └── DesignSystem/             # Colors, typography, spacing
 │
-├── INTEGRATION.md                    # Full integration docs (API ref, data flow, troubleshooting)
-└── README.md                         # This file
+├── INTEGRATION.md                    # API reference, data flow, troubleshooting
+└── README.md
 ```
 
 ---
@@ -312,9 +261,10 @@ ch3-applepie/
 ```mermaid
 flowchart TB
     subgraph iOS["iOS App (SwiftUI)"]
-        Views["Feature Views\n(Home, ChatList, Form, Conversation)"]
-        Store["ChatStore\n(@Observable state)"]
-        SvcLayer["Service Layer\n(User, Chat, Message, Form)"]
+        Home["Home / Context Setup"]
+        Trans ["Transcription Screen"]
+        Sheet["Reply Sheet\n(Suggestions + Text)"]
+        FlipV["Flip Text View"]
         Speech["SpeechService\n(STT + TTS)"]
         APIClient["APIClient (actor)\nURLSession + JSON"]
         Keychain["DeviceIdentityService\n(Keychain UUID)"]
@@ -330,29 +280,30 @@ flowchart TB
         LLM["OpenAI-compatible LLM\n(GPT-4o-mini)"]
     end
 
-    Views --> Store
-    Views --> Speech
-    Store --> SvcLayer
-    SvcLayer --> APIClient
+    Home --> Trans
+    Trans --> Sheet
+    Sheet --> FlipV
+    Trans --> Speech
+    Sheet --> Speech
     APIClient --> Keychain
+    Sheet --> APIClient
+    Home --> APIClient
     APIClient -- "HTTPS + JSON\nX-Device-Id header" --> Routers
     Routers --> SvcBackend
     SvcBackend --> DB
     SvcBackend --> LLM
-    Speech -- "SFSpeechRecognizer\nAVSpeechSynthesizer" --> Views
+    Speech -- "SFSpeechRecognizer\nAVSpeechSynthesizer" --> Trans
 ```
 
-### Data flow summary
+### Data flow
 
 | Action | Flow |
 |---|---|
 | **App launch** | Keychain UUID → `POST /api/users/register` → ready |
-| **Load chats** | `GET /api/chats` → `ChatListItem[]` → `RecentChat[]` → UI |
-| **Fill form** | `GET /api/forms/{type}` → steps → user answers → `POST /api/chats` with context |
-| **Send message** | `POST /api/chats/{id}/messages` → user message saved → AI reply returned |
-| **Live transcribe** | 🎤 tap → `SFSpeechRecognizer` → live text banner → stop → append message → auto-send to AI |
-| **Speak reply** | 🔊 tap → `AVSpeechSynthesizer.speak()` with country voice |
-| **Get suggestions** | `POST /api/chats/{id}/suggestions` → AI generates context-aware phrases |
+| **Set context** | Flight details → `POST /api/chats` |
+| **Staff speaks** | 🎤 tap → `SFSpeechRecognizer` → live transcription on screen |
+| **AI suggests** | `POST /api/chats/{id}/suggestions` → chips in reply sheet |
+| **Deliver response** | Flip Text (rotated full-screen) or Speak (TTS) |
 
 ---
 
@@ -363,14 +314,14 @@ All endpoints prefixed with `/api`. Full reference in [INTEGRATION.md](./INTEGRA
 | Method | Endpoint | Purpose |
 |---|---|---|
 | `POST` | `/api/users/register` | Register device (idempotent) |
-| `GET` | `/api/chats` | List user's chats |
-| `POST` | `/api/chats` | Create chat with context |
-| `GET` | `/api/chats/{id}` | Get single chat |
-| `DELETE` | `/api/chats/{id}` | Soft-delete chat |
-| `GET` | `/api/chats/{id}/messages` | Paginated message history |
-| `POST` | `/api/chats/{id}/messages` | Send message + get AI reply |
+| `GET` | `/api/chats` | List user's sessions |
+| `POST` | `/api/chats` | Create session with context |
+| `GET` | `/api/chats/{id}` | Get single session |
+| `DELETE` | `/api/chats/{id}` | Soft-delete session |
+| `GET` | `/api/chats/{id}/messages` | Paginated transcription history |
+| `POST` | `/api/chats/{id}/messages` | Save transcription + get AI reply |
 | `GET` | `/api/forms/{type}` | Get form definition |
-| `POST` | `/api/chats/{id}/suggestions` | Generate quick-reply phrases |
+| `POST` | `/api/chats/{id}/suggestions` | Generate reply chips |
 
 ---
 
@@ -378,36 +329,31 @@ All endpoints prefixed with `/api`. Full reference in [INTEGRATION.md](./INTEGRA
 
 - No XCTest target configured yet
 - Backend requires a running PostgreSQL instance and LLM API key
-- Mock data still initializes `ChatStore` as fallback; real data replaces it on first successful load
-- Physical device needs the Mac's IP in `APIEnvironment.swift` (simulator uses `localhost` automatically)
+- Physical device needed for speech recognition (simulator not supported)
+- Physical device needs the Mac's IP in `APIEnvironment.swift`
 
 ---
 
 ## Roadmap
 
-- [x] AI response backend for context-aware chats
 - [x] On-device speech-to-text with live transcription
-- [x] On-device text-to-speech with country-aware voices
-- [x] Full API integration (all endpoints wired to iOS)
+- [x] On-device text-to-speech
+- [x] AI reply suggestions (context-aware)
+- [x] Backend API (FastAPI + PostgreSQL)
 - [x] Device identity via Keychain
-- [x] Pull-to-refresh and error recovery across all views
-- [ ] Speech-to-text language auto-detection
-- [ ] Message persistence / offline queue
+- [ ] Transcription screen with mic FAB
+- [ ] Reply sheet with suggestions + text field
+- [ ] Flip Text — rotated full-screen display
+- [ ] Context setup (flight details + presets)
+- [ ] Boarding pass / ticket upload (document OCR)
+- [ ] Text size adjustment controls
+- [ ] Multi-language support
 - [ ] Accessibility audit (VoiceOver, Dynamic Type, high contrast)
 - [ ] XCTest unit + UI test suite
-- [ ] CI pipeline (build + test on PR)
-
----
-
-## Contribution
-
-- Create a feature branch from `main`
-- Keep changes focused and small
-- Run the app locally before opening a PR
-- In PRs, include what changed, why, and how it was tested
+- [ ] CI pipeline
 
 ---
 
 ## Vision
 
-Conversa removes communication barriers and makes travel accessible for deaf and hard-of-hearing individuals by combining accessibility-centered UX, real-time speech transcription, AI-powered conversation assistance, and text-to-speech — all in one app that works the moment you land in a new country.
+Conversa removes communication barriers at airports by combining real-time speech transcription, AI-powered reply suggestions, Flip Text display, and optional text-to-speech — enabling deaf and hard-of-hearing travelers to communicate with airport staff independently, confidently, and without typing.

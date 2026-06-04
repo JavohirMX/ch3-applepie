@@ -1,24 +1,22 @@
 # Conversa Backend
 
-Conversa backend is a FastAPI service for an iOS communication companion focused on deaf and hard-of-hearing travelers.
-It stores user chats, applies context from travel forms, and generates AI-assisted responses and quick suggestions.
+Conversa backend is a FastAPI service powering the Conversa iOS app — an AI conversation assistant for deaf and hard-of-hearing travelers at airports. It stores conversation history, applies user context (flight details, gate info), and generates AI-assisted responses and quick suggestions.
 
 ## Why this backend exists
 
-When users are navigating hotels, airports, rides, and stores, they need fast, practical phrasing in context.
-This API provides:
+When deaf and hard-of-hearing travelers interact with airport staff, they need fast, context-aware phrasing. This API provides:
 
 - persistent conversation history per device user
-- context-aware AI responses (form answers are injected into prompts)
-- category-specific quick suggestions for next phrases
+- context-aware AI responses (boarding pass info, flight details injected into prompts)
+- quick-reply phrase suggestions for common airport situations
 - clean integration surface for iOS (`/api/*`, JSON-first, OpenAPI docs)
 
 ## Feature highlights
 
 - **Device-based user identity** via `X-Device-Id` header
-- **Chat organization** by category (`transport`, `store`, `hotel`, `misc`) and form type (`airport`, `cab`, `bus`, `hotel`, `store`, `misc_generic`)
+- **Context-aware chats** — user provides flight/airport context; AI tailors responses accordingly
 - **Message flow** that saves user message + AI reply in one request
-- **Suggestions endpoint** for short follow-up phrases
+- **Suggestions endpoint** for short follow-up phrases (3-4 context-aware options)
 - **Soft delete chats** (`is_active=false`) instead of hard delete
 - **Async stack** with FastAPI, SQLAlchemy async, Postgres, and Alembic migrations
 - **Provider-agnostic LLM config** (OpenAI-compatible clients via model/base URL)
@@ -140,7 +138,7 @@ If device is unknown, protected endpoints return `404` with:
 ### Chats
 
 - `GET /api/chats?category=<optional>&is_active=true` - list user's chats
-- `POST /api/chats` - create a chat from form context
+- `POST /api/chats` - create a chat from context (flight details, boarding pass info, etc.)
 - `GET /api/chats/{chat_id}` - get one owned chat
 - `DELETE /api/chats/{chat_id}` - soft delete (`204`)
 
@@ -166,26 +164,26 @@ curl -X POST http://localhost:8000/api/users/register \
   }'
 ```
 
-### 2) Create chat
+### 2) Create chat with airport context
 
 ```bash
 curl -X POST http://localhost:8000/api/chats \
   -H "Content-Type: application/json" \
   -H "X-Device-Id: ios-sim-001" \
   -d '{
-    "category": "hotel",
-    "form_type": "hotel",
-    "title": "Famous Hotel",
-    "subtitle": "Kuta, Bali",
+    "category": "transport",
+    "form_type": "airport",
+    "title": "Soekarno-Hatta Airport",
+    "subtitle": "Gate C7, flight QZ254 to Singapore",
     "country_code": "ID",
     "context_answers": {
-      "0": "Famous Hotel",
-      "1": "Anna Smith",
-      "2": "Jan 10, 2026 - Jan 14, 2026",
-      "3": "High floor, quiet room",
-      "4": "No allergies",
-      "5": "Check-in and checkout conversations",
-      "6": ""
+      "0": "Garuda GA402",
+      "1": "Jakarta to Singapore",
+      "2": "Window seat",
+      "3": "No allergies",
+      "4": "Yes",
+      "5": "Check-in and boarding conversations",
+      "6": "I am deaf and will use this app to communicate"
     }
   }'
 ```
@@ -197,7 +195,7 @@ curl -X POST http://localhost:8000/api/chats/<chat_id>/messages \
   -H "Content-Type: application/json" \
   -H "X-Device-Id: ios-sim-001" \
   -d '{
-    "text": "Please tell reception I cannot hear and prefer written instructions."
+    "text": "I'm deaf. Can you help me find my gate?"
   }'
 ```
 

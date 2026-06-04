@@ -1,13 +1,11 @@
 import uuid
 from typing import Annotated
 
+from app.database import get_db
+from app.models import Chat, User
 from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.database import get_db
-from app.models import Chat, User
-
 
 DeviceIdHeader = Annotated[str, Header(..., alias="X-Device-Id")]
 
