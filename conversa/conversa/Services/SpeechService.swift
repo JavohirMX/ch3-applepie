@@ -166,7 +166,7 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate {
         let segment = result.bestTranscription.formattedString.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if result.isFinal {
-            appendCommitted(segment)
+            appendCommittedIfNew(segment)
             updateDetectedLanguage(from: liveTranscript)
             return
         }
@@ -178,7 +178,7 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate {
 
         let previousPartial = currentPartial.trimmingCharacters(in: .whitespacesAndNewlines)
         if !previousPartial.isEmpty, !segment.hasPrefix(previousPartial), !previousPartial.hasPrefix(segment) {
-            appendCommitted(previousPartial)
+            appendCommittedIfNew(previousPartial)
         }
 
         currentPartial = segment
@@ -186,34 +186,68 @@ final class SpeechService: NSObject, AVSpeechSynthesizerDelegate {
         updateDetectedLanguage(from: liveTranscript)
     }
 
-    private func appendCommitted(_ segment: String) {
-        let trimmed = segment.trimmingCharacters(in: .whitespacesAndNewlines)
+    /// Merges committed text with a partial hypothesis. Partials from `SFSpeechRecognizer` are
+    /// cumulative for the current utterance, so they must not be concatenated blindly.
+    static func mergeTranscript(committed: String, partial: String) -> String {
+        let committedNormalized = normalizeTranscript(committed)
+        let partialNormalized = normalizeTranscript(partial)
+
+        if partialNormalized.isEmpty {
+            return committedNormalized
+        }
+        if committedNormalized.isEmpty {
+            return partialNormalized
+        }
+        if partialNormalized.hasPrefix(committedNormalized) {
+            return partialNormalized
+        }
+        if committedNormalized.hasPrefix(partialNormalized) {
+            return committedNormalized
+        }
+        return committedNormalized + " " + partialNormalized
+    }
+
+    static func normalizeTranscript(_ text: String) -> String {
+        text
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    private func appendCommittedIfNew(_ segment: String) {
+        let trimmed = Self.normalizeTranscript(segment)
         guard !trimmed.isEmpty else { return }
 
-        if committedTranscript.isEmpty {
+        let committed = Self.normalizeTranscript(committedTranscript)
+
+        if committed.isEmpty {
             committedTranscript = trimmed
+        } else if trimmed == committed {
+            // Already represented.
+        } else if trimmed.hasPrefix(committed) {
+            committedTranscript = trimmed
+        } else if committed.hasPrefix(trimmed) {
+            // Stale or shorter segment; keep existing committed text.
         } else {
-            committedTranscript += " " + trimmed
+            committedTranscript = committed + " " + trimmed
         }
+
         currentPartial = ""
         updateLiveTranscriptDisplay()
     }
 
     private func commitOpenPartial() {
-        let trimmed = currentPartial.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmed = Self.normalizeTranscript(currentPartial)
         guard !trimmed.isEmpty else { return }
-        appendCommitted(trimmed)
+        appendCommittedIfNew(trimmed)
     }
 
     private func updateLiveTranscriptDisplay() {
-        let partial = currentPartial.trimmingCharacters(in: .whitespacesAndNewlines)
-        if partial.isEmpty {
-            liveTranscript = committedTranscript
-        } else if committedTranscript.isEmpty {
-            liveTranscript = partial
-        } else {
-            liveTranscript = committedTranscript + " " + partial
-        }
+        liveTranscript = Self.mergeTranscript(
+            committed: committedTranscript,
+            partial: currentPartial
+        )
     }
 
     private func updateDetectedLanguage(from text: String) {
