@@ -8,9 +8,9 @@
 ![Status](https://img.shields.io/badge/status-in--progress-yellow)
 ![Team](https://img.shields.io/badge/team-Apple_Pi-orange)
 
-**Team Apple Pi** (π + pie): John, Aryan, Hans, Sakina, Aulia
+**Team Apple Pi** (π + pie): Aryan, Aulia, Hans, Sakinah, John
 
-Conversa is an iOS app built by **Team Apple Pi** for the Apple Pie hackathon (`ch3-applepie`). It enables fast, natural communication between deaf travelers and airport staff. It transcribes speech in real time, uses AI to suggest context-aware replies you can tap to respond, and flips your response to a large readable display for the other person.
+Conversa enables fast, natural communication between deaf travelers and airport staff. It transcribes speech in real time, uses AI to suggest context-aware replies you can tap to respond, and flips your response to a large readable display for the other person.
 
 ---
 
@@ -95,7 +95,6 @@ Conversa removes that friction:
 │  │ Suggestion 4       │  │
 │  └────────────────────┘  │
 │                          │
-│  [ 🔄 Flip ] [ 🔊 Speak ]│  ← Deliver your response
 └──────────────────────────┘
 ```
 
@@ -132,11 +131,6 @@ Provide your situation before the interaction:
 - High contrast, easy to read at a glance
 - Tap to dismiss
 
-### Text-to-Speech
-
-- Reads your response aloud in a clear voice
-- Useful when staff can't easily read the screen
-
 ### Text Size Control
 
 - Slider or preset sizes (Small / Medium / Large / Extra Large)
@@ -164,7 +158,6 @@ Provide your situation before the interaction:
 | State management | `@Observable` (Swift Observation) |
 | Networking | Swift Concurrency (`async/await` + `URLSession`) |
 | Speech-to-text | `Speech` framework (`SFSpeechRecognizer`) |
-| Text-to-speech | `AVFAudio` (`AVSpeechSynthesizer`) |
 | Document OCR | VisionKit / `VNDocumentCameraViewController` |
 | Device identity | Keychain Services |
 | Backend framework | FastAPI (Python 3.12+) |
@@ -335,7 +328,7 @@ All endpoints prefixed with `/api`. See [backend/README.md](./backend/README.md)
 
 ## Roadmap
 
-### iOS (Team Apple Pi)
+### iOS
 
 - [x] Onboarding and first-run setup (preferences, ticket upload)
 - [x] Home hub and Settings
@@ -358,4 +351,4 @@ All endpoints prefixed with `/api`. See [backend/README.md](./backend/README.md)
 
 ## Vision
 
-Conversa removes communication barriers at airports by combining real-time speech transcription, AI-powered reply suggestions, Flip Text display, and optional text-to-speech — enabling deaf and hard-of-hearing travelers to communicate with airport staff independently, confidently, and without typing.
+Conversa removes communication barriers at airports by combining real-time speech transcription, AI-powered reply suggestions, and optional text-to-speech — enabling deaf and hard-of-hearing travelers to communicate with airport staff independently, confidently, and without typing.
