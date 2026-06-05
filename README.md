@@ -6,11 +6,11 @@
 ![UI](https://img.shields.io/badge/UI-SwiftUI-0A84FF)
 ![Backend](https://img.shields.io/badge/backend-FastAPI-009688)
 ![Status](https://img.shields.io/badge/status-in--progress-yellow)
-![Team](https://img.shields.io/badge/team-AERES-orange)
+![Team](https://img.shields.io/badge/team-Apple_Pi-orange)
 
-**Team:** John, Aryan, Hans, Sakina, Aulia
+**Team Apple Pi** (π + pie): John, Aryan, Hans, Sakina, Aulia
 
-Conversa is an iOS app that enables fast, natural communication between deaf travelers and airport staff. It transcribes speech in real time, uses AI to suggest context-aware replies you can tap to respond, and flips your response to a large readable display for the other person.
+Conversa is an iOS app built by **Team Apple Pi** for the Apple Pie hackathon (`ch3-applepie`). It enables fast, natural communication between deaf travelers and airport staff. It transcribes speech in real time, uses AI to suggest context-aware replies you can tap to respond, and flips your response to a large readable display for the other person.
 
 ---
 
@@ -191,29 +191,32 @@ curl http://localhost:8000/health
 # → {"status": "ok"}
 ```
 
-### 2. Add privacy keys in Xcode
+### 2. Run the iOS app
 
-In Xcode, select the **CH3** target → **Info** tab and add:
+Privacy usage strings (microphone, speech recognition, camera, photo library) are configured in the **conversa** Xcode target build settings.
 
-| Key | Value |
-|---|---|
-| `Privacy - Speech Recognition Usage Description` | `Conversa uses speech recognition to transcribe what people say to you in real time.` |
-| `Privacy - Microphone Usage Description` | `Conversa needs the microphone to capture speech for live transcription.` |
+1. Open `conversa/conversa.xcodeproj` in Xcode
+2. Select scheme: **conversa**
+3. Choose an iOS Simulator or physical device (recommended for speech recognition)
+4. Press **Run** (⌘R)
 
-### 3. Run
+See [conversa/README.md](./conversa/README.md) for the full iOS app flow, architecture, and manual test checklist.
 
-1. Select scheme: **CH3**
-2. Choose an iOS Simulator (iPhone 16+)
-3. Press **Run** (⌘R)
+### 3. Backend (optional)
 
-### First launch
+The iOS app does not require the backend for local transcription today. To run the API:
 
-1. App generates a UUID → stores in Keychain
-2. Registers device with backend: `POST /api/users/register`
-3. Enter your flight context
-4. Tap the mic when someone speaks → live transcription appears
-5. Tap Reply → AI suggestions appear → tap one to select
-6. Flip Text or Speak to deliver your response
+```bash
+cd backend
+# see backend/README.md
+```
+
+### First launch (iOS)
+
+1. **Onboarding** — two intro pages (Skip or Start)
+2. **Setup** — personal preferences → upload ticket → confirm ticket info (once)
+3. **Home** — continue or start a new journey
+4. **Transcription** — tap mic for live speech-to-text; use the text sheet to compose replies and Flip Text
 
 ---
 
@@ -223,34 +226,30 @@ In Xcode, select the **CH3** target → **Info** tab and add:
 ch3-applepie/
 ├── backend/                          # FastAPI backend
 │   ├── app/
-│   │   ├── main.py                   # App setup, CORS, router mounting
-│   │   ├── config.py                 # Settings from env vars
-│   │   ├── database.py               # Async SQLAlchemy engine
-│   │   ├── dependencies.py           # Auth guards (X-Device-Id)
-│   │   ├── models/                   # SQLAlchemy ORM entities
-│   │   ├── schemas/                  # Pydantic request/response schemas
+│   │   ├── main.py
 │   │   ├── routers/                  # /users, /chats, /messages, /forms
-│   │   └── services/                 # Business logic + OpenAI client
-│   ├── alembic/                      # DB migrations
-│   ├── Dockerfile
+│   │   └── services/
+│   ├── alembic/
 │   ├── docker-compose.yml
-│   └── requirements.txt
+│   └── README.md
 │
-├── CH3/                              # iOS app (rebuilding from scratch)
-│   ├── CH3.xcodeproj/
-│   └── CH3/
-│       ├── Networking/               # HTTP layer (APIClient, env, errors)
-│       ├── Services/                 # API + platform (Speech, User, Chat, Form)
-│       ├── Models/                   # DTOs, domain models, state
+├── conversa/                         # iOS app (SwiftUI)
+│   ├── conversa.xcodeproj/
+│   ├── README.md                     # Detailed iOS docs
+│   └── conversa/
+│       ├── App/                      # conversaApp, RootView
+│       ├── Navigation/               # MainFlowView, routes
+│       ├── Services/                 # SpeechService, JourneyStore
 │       ├── Features/
-│       │   ├── Home/                 # Entry point + context setup
-│       │   ├── Transcription/        # Main transcription screen + mic
-│       │   ├── ReplySheet/           # Reply sheet with text field + chips
-│       │   └── FlipText/             # Full-screen flipped text display
-│       ├── Components/               # Reusable UI pieces
-│       └── DesignSystem/             # Colors, typography, spacing
+│       │   ├── Onboarding/
+│       │   ├── Setup/                # Preferences, ticket upload
+│       │   ├── Home/
+│       │   ├── Settings/
+│       │   ├── Transcription/        # Mic, live STT, TextSheet
+│       │   └── FlipText/
+│       ├── Components/
+│       └── DesignSystem/
 │
-├── INTEGRATION.md                    # API reference, data flow, troubleshooting
 └── README.md
 ```
 
@@ -309,7 +308,7 @@ flowchart TB
 
 ## API Surface
 
-All endpoints prefixed with `/api`. Full reference in [INTEGRATION.md](./INTEGRATION.md).
+All endpoints prefixed with `/api`. See [backend/README.md](./backend/README.md) for setup and API details.
 
 | Method | Endpoint | Purpose |
 |---|---|---|
@@ -329,28 +328,31 @@ All endpoints prefixed with `/api`. Full reference in [INTEGRATION.md](./INTEGRA
 
 - No XCTest target configured yet
 - Backend requires a running PostgreSQL instance and LLM API key
-- Physical device needed for speech recognition (simulator not supported)
-- Physical device needs the Mac's IP in `APIEnvironment.swift`
+- Physical device recommended for speech recognition (Simulator is unreliable)
+- iOS backend client not wired yet — transcription and journey data are local (`JourneyStore`)
 
 ---
 
 ## Roadmap
 
-- [x] On-device speech-to-text with live transcription
-- [x] On-device text-to-speech
-- [x] AI reply suggestions (context-aware)
-- [x] Backend API (FastAPI + PostgreSQL)
-- [x] Device identity via Keychain
-- [ ] Transcription screen with mic FAB
-- [ ] Reply sheet with suggestions + text field
-- [ ] Flip Text — rotated full-screen display
-- [ ] Context setup (flight details + presets)
-- [ ] Boarding pass / ticket upload (document OCR)
-- [ ] Text size adjustment controls
-- [ ] Multi-language support
-- [ ] Accessibility audit (VoiceOver, Dynamic Type, high contrast)
+### iOS (Team Apple Pi)
+
+- [x] Onboarding and first-run setup (preferences, ticket upload)
+- [x] Home hub and Settings
+- [x] Transcription screen with mic and live STT
+- [x] Text sheet with suggestions and Flip Text
+- [x] On-device text-to-speech (`SpeechService`, UI not wired)
+- [ ] Backend API integration (device register, chats, AI suggestions)
+- [ ] Real boarding pass OCR
+- [ ] Text-to-speech button in UI
+- [ ] Accessibility audit (VoiceOver, Dynamic Type)
 - [ ] XCTest unit + UI test suite
-- [ ] CI pipeline
+
+### Backend
+
+- [x] FastAPI + PostgreSQL API
+- [x] AI reply suggestions endpoint
+- [ ] Full iOS client integration
 
 ---
 

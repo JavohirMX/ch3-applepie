@@ -469,7 +469,7 @@ Semantic font tokens: `homeTitle`, `setupTitle`, `sheetTitle`, `transcriptBody`,
 
 - `SFSpeechRecognizer` with partial results
 - On-device recognition when supported
-- Committed + partial transcript merging (reduces word loss on pause)
+- Committed + partial transcript merging: partial results are **cumulative** from Apple, merged via `mergeTranscript` to avoid duplicate words on screen
 - `isUserStopping` + filtered errors (cancel, no speech, etc.)
 - Language hint via `NLLanguageRecognizer` after enough text
 
