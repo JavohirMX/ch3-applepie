@@ -61,6 +61,23 @@ final class JourneyStore {
         savedDraftText = draftText
     }
 
+    func resetAll() {
+        let defaults = UserDefaults.standard
+        defaults.removeObject(forKey: Keys.preferences)
+        defaults.removeObject(forKey: Keys.ticket)
+        defaults.removeObject(forKey: Keys.image)
+        defaults.removeObject(forKey: Keys.transcript)
+        defaults.removeObject(forKey: Keys.draft)
+        defaults.removeObject(forKey: Keys.hasActiveJourney)
+
+        userPreferences = .empty
+        activeTicket = nil
+        uploadedTicketImageData = nil
+        savedTranscript = ""
+        savedDraftText = ""
+        hasActiveJourney = false
+    }
+
     // MARK: - Persistence
 
     private func persistPreferences() {

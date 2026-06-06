@@ -11,11 +11,16 @@ struct TextSheet: View {
     @Binding var draftText: String
     @Binding var selectedDetent: PresentationDetent
     @State private var shouldFocusEditorAfterExpand = false
+    @State private var isComposerExpanded = false
     @State private var showFlipText = false
     @FocusState private var isEditorFocused: Bool
 
     private var canFlipText: Bool {
         !draftText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    private var usesCompactComposer: Bool {
+        !isComposerExpanded && draftText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     init(
@@ -56,6 +61,12 @@ struct TextSheet: View {
         .padding(.top, 8)
         .padding(.bottom, 16)
         .animation(.easeInOut(duration: 0.25), value: selectedDetent)
+        .animation(.easeInOut(duration: 0.25), value: usesCompactComposer)
+        .onAppear {
+            if canFlipText {
+                isComposerExpanded = true
+            }
+        }
         .onChange(of: selectedDetent) { _, detent in
             guard detent == .large, shouldFocusEditorAfterExpand else { return }
             shouldFocusEditorAfterExpand = false
@@ -74,7 +85,7 @@ struct TextSheet: View {
     // MARK: - Peek (0.1)
 
     private var peekContent: some View {
-        Text("Text")
+        Text("Write your thoughts")
             .font(Typography.sheetTitle)
             .foregroundStyle(BrandColors.navy)
             .frame(maxWidth: .infinity)
@@ -87,7 +98,7 @@ struct TextSheet: View {
         VStack(alignment: .leading, spacing: 12) {
             sheetTitle
 
-            compactTextFieldSection
+            compactTextFieldSection(action: expandAndFocusEditor)
 
             VStack(spacing: 10) {
                 ForEach(Self.mediumSuggestions, id: \.self) { suggestion in
@@ -111,13 +122,17 @@ struct TextSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             sheetTitle
 
-            textEditorSection
-
-            actionButtonsRow
+            if usesCompactComposer {
+                compactTextFieldSection(action: { expandComposer(focus: true) })
+            } else {
+                textEditorSection
+                actionButtonsRow
+            }
 
             Text("Suggestions")
                 .font(Typography.suggestionLabel)
                 .foregroundStyle(BrandColors.suggestionLabel)
+                .onTapGesture(perform: dismissKeyboard)
 
             ScrollView {
                 LazyVStack(spacing: 10) {
@@ -128,18 +143,20 @@ struct TextSheet: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
         }
     }
 
     private var sheetTitle: some View {
-        Text("Text")
+        Text("Write your thoughts")
             .font(Typography.sheetTitle)
             .foregroundStyle(BrandColors.navy)
             .frame(maxWidth: .infinity)
+            .onTapGesture(perform: dismissKeyboard)
     }
 
-    private var compactTextFieldSection: some View {
-        Button(action: expandAndFocusEditor) {
+    private func compactTextFieldSection(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             ZStack(alignment: .leading) {
                 RoundedRectangle(cornerRadius: 26, style: .continuous)
                     .fill(BrandColors.editorBackground)
@@ -183,9 +200,7 @@ struct TextSheet: View {
 
     private var actionButtonsRow: some View {
         HStack {
-            actionButton(icon: "xmark", label: "Clear text") {
-                draftText = ""
-            }
+            actionButton(icon: "xmark", label: "Clear text", action: clearDraft)
 
             Spacer()
 
@@ -217,16 +232,29 @@ struct TextSheet: View {
         .accessibilityLabel(label)
     }
 
+    private func dismissKeyboard() {
+        isEditorFocused = false
+        Keyboard.dismiss()
+    }
+
     private func presentFlipText() {
         guard canFlipText else { return }
-        isEditorFocused = false
+        dismissKeyboard()
         showFlipText = true
     }
 
+    private func clearDraft() {
+        draftText = ""
+        isComposerExpanded = false
+        dismissKeyboard()
+    }
+
     private func selectSuggestion(_ text: String) {
+        dismissKeyboard()
         draftText = text
+        isComposerExpanded = true
         if isMediumDetent {
-            expandToLarge(focusEditor: true)
+            expandToLarge(focusEditor: false)
         }
     }
 
@@ -238,13 +266,25 @@ struct TextSheet: View {
         expandToLarge(focusEditor: true)
     }
 
+    private func expandComposer(focus: Bool) {
+        isComposerExpanded = true
+        guard focus else { return }
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(100))
+            isEditorFocused = true
+        }
+    }
+
     private func expandToLarge(focusEditor: Bool) {
         guard !isPeekDetent else { return }
         if selectedDetent == .large {
             if focusEditor {
-                isEditorFocused = true
+                expandComposer(focus: true)
             }
             return
+        }
+        if focusEditor {
+            isComposerExpanded = true
         }
         shouldFocusEditorAfterExpand = focusEditor
         selectedDetent = .large
@@ -257,13 +297,13 @@ struct TextSheet: View {
     TextSheet(draftText: $draft, selectedDetent: $detent)
 }
 
-#Preview("Expanded") {
+#Preview("Expanded compact") {
     @Previewable @State var detent: PresentationDetent = .large
     @Previewable @State var draft = ""
     TextSheet(draftText: $draft, selectedDetent: $detent)
 }
 
-#Preview("Filled") {
+#Preview("Expanded filled") {
     @Previewable @State var detent: PresentationDetent = .large
     @Previewable @State var draft =
         "Hi there, my name is Leo and I am deaf. I use this app to communicate with you."

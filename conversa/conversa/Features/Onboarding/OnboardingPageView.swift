@@ -15,12 +15,12 @@ struct OnboardingPageView: View {
             VStack(spacing: 12) {
                 Text(page.title)
                     .font(Typography.headline)
-                    .foregroundStyle(BrandColors.orange)
+                    .foregroundStyle(BrandColors.navy)
                     .multilineTextAlignment(.center)
 
                 Text(page.subtitle)
                     .font(Typography.body)
-                    .foregroundStyle(BrandColors.body)
+                    .foregroundStyle(BrandColors.secondaryText)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)
             }
@@ -31,12 +31,17 @@ struct OnboardingPageView: View {
     }
 }
 
-#Preview("Less stress") {
+#Preview("Understand conversations") {
     OnboardingPageView(page: OnboardingPage.pages[0])
         .background(Color.white)
 }
 
-#Preview("Personalized") {
+#Preview("Express yourself") {
     OnboardingPageView(page: OnboardingPage.pages[1])
+        .background(Color.white)
+}
+
+#Preview("Travel with confidence") {
+    OnboardingPageView(page: OnboardingPage.pages[2])
         .background(Color.white)
 }

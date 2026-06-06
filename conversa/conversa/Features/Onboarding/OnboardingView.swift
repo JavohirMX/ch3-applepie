@@ -54,11 +54,11 @@ struct OnboardingView: View {
         Button(action: primaryAction) {
             Text(pages[currentPage].primaryButtonTitle)
                 .font(Typography.button)
-                .foregroundStyle(.white)
+                .foregroundStyle(BrandColors.navy)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
         }
-        .background(BrandColors.navy, in: Capsule())
+        .background(BrandColors.orange, in: Capsule())
         .accessibilityLabel(pages[currentPage].primaryButtonTitle)
     }
 

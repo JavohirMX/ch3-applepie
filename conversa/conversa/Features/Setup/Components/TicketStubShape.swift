@@ -1,47 +1,74 @@
 import SwiftUI
 
+/// Ticket / stamp card with semicircular perforations on the left and right edges only.
 struct TicketStubShape: Shape {
-    var notchRadius: CGFloat = 6
-    var notchSpacing: CGFloat = 14
+    var notchRadius: CGFloat = 5
+    var notchSpacing: CGFloat = 12
 
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        let insetY = notchRadius
-        let inner = CGRect(
-            x: rect.minX,
-            y: rect.minY + insetY,
-            width: rect.width,
-            height: rect.height - insetY * 2
-        )
+        let r = notchRadius
+        let spacing = notchSpacing
 
-        path.move(to: CGPoint(x: inner.minX, y: inner.minY))
-        addNotchedEdge(path: &path, y: inner.minY, xStart: inner.minX, xEnd: inner.maxX, outward: false)
-        addNotchedEdge(path: &path, y: inner.maxY, xStart: inner.maxX, xEnd: inner.minX, outward: true)
+        let leftEdge = rect.minX + r
+        let rightEdge = rect.maxX - r
+        let firstScallopY = rect.minY + r + spacing / 2
+        let lastScallopY = rect.maxY - r - spacing / 2
+
+        path.move(to: CGPoint(x: rect.minX, y: rect.minY))
+        path.addLine(to: CGPoint(x: rect.maxX, y: rect.minY))
+
+        var y = firstScallopY
+        if y - r > rect.minY {
+            path.addLine(to: CGPoint(x: rect.maxX, y: y - r))
+        }
+
+        while y <= lastScallopY {
+            path.addArc(
+                center: CGPoint(x: rightEdge, y: y),
+                radius: r,
+                startAngle: .degrees(-90),
+                endAngle: .degrees(90),
+                clockwise: false
+            )
+            y += spacing
+        }
+
+        if y - spacing + r < rect.maxY {
+            path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))
+        }
+
+        path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+
+        y = lastScallopY
+        if y + r < rect.maxY {
+            path.addLine(to: CGPoint(x: rect.minX, y: y + r))
+        }
+
+        while y >= firstScallopY {
+            path.addArc(
+                center: CGPoint(x: leftEdge, y: y),
+                radius: r,
+                startAngle: .degrees(90),
+                endAngle: .degrees(-90),
+                clockwise: false
+            )
+            y -= spacing
+        }
+
+        if firstScallopY - r > rect.minY {
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.minY))
+        }
+
         path.closeSubpath()
         return path
     }
+}
 
-    private func addNotchedEdge(
-        path: inout Path,
-        y: CGFloat,
-        xStart: CGFloat,
-        xEnd: CGFloat,
-        outward: Bool
-    ) {
-        let goingRight = xEnd > xStart
-        var x = xStart
-        let step = notchSpacing
-
-        while (goingRight && x < xEnd) || (!goingRight && x > xEnd) {
-            let nextX = goingRight ? min(x + step, xEnd) : max(x - step, xEnd)
-            let midX = (x + nextX) / 2
-            let bump = outward ? notchRadius : -notchRadius
-            path.addQuadCurve(
-                to: CGPoint(x: nextX, y: y),
-                control: CGPoint(x: midX, y: y + bump)
-            )
-            x = nextX
-            if x == xEnd { break }
-        }
-    }
+#Preview {
+    TicketStubShape()
+        .fill(Color.white)
+        .padding(.horizontal, 24)
+        .padding(.vertical, 32)
+        .background(BrandColors.setupPageBackground)
 }

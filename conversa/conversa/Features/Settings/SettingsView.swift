@@ -2,9 +2,12 @@ import SwiftUI
 
 struct SettingsView: View {
     var onEditBoardingPass: () -> Void
-    var onEditPreferences: () -> Void
 
     @Environment(JourneyStore.self) private var journeyStore
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
+    @AppStorage("hasCompletedSetup") private var hasCompletedSetup = false
+    @State private var showResetConfirmation = false
+    @State private var showEmergencyContactSheet = false
 
     var body: some View {
         ScrollView {
@@ -12,11 +15,14 @@ struct SettingsView: View {
                 Text("Settings")
                     .font(Typography.homeTitle)
                     .foregroundStyle(BrandColors.navy)
+                    .onLongPressGesture {
+                        showResetConfirmation = true
+                    }
 
                 VStack(alignment: .leading, spacing: 8) {
                     settingsCard {
                         HStack {
-                            Text("My boarding pass")
+                            Text("My Ticket")
                                 .font(Typography.body)
                                 .foregroundStyle(BrandColors.navy)
                             Spacer()
@@ -41,37 +47,35 @@ struct SettingsView: View {
                     Text("Preferences")
                         .font(Typography.settingsSectionLabel)
                         .foregroundStyle(BrandColors.settingsSectionHeader)
-                        .textCase(.uppercase)
 
                     settingsCard {
                         VStack(spacing: 0) {
-                            preferenceRow(
+                            dropdownPreferenceRow(
                                 title: "Meal Preferences",
-                                showsEdit: true,
-                                action: onEditPreferences
-                            )
+                                options: MealPreferenceOption.allCases.map(\.rawValue),
+                                currentValue: journeyStore.userPreferences.mealPreference
+                            ) { value in
+                                updatePreferences { $0.mealPreference = value }
+                            }
                             divider
-                            preferenceRow(
+                            dropdownPreferenceRow(
                                 title: "Seating Position",
-                                showsEdit: true,
-                                action: onEditPreferences
-                            )
+                                options: SeatPreferenceOption.allCases.map(\.rawValue),
+                                currentValue: journeyStore.userPreferences.seatPreference
+                            ) { value in
+                                updatePreferences { $0.seatPreference = value }
+                            }
                             divider
-                            preferenceRow(
-                                title: "Emergency Contact",
-                                subtitle: journeyStore.userPreferences.emergencyContactDisplay,
-                                showsEdit: false,
-                                action: onEditPreferences
-                            )
+                            emergencyContactRow
                             divider
-                            preferenceRow(
-                                title: "Type of Disabilty",
-                                subtitle: journeyStore.userPreferences.disabilityType.isEmpty
-                                    ? "Not set"
-                                    : journeyStore.userPreferences.disabilityType,
-                                showsEdit: false,
-                                action: onEditPreferences
-                            )
+                            dropdownPreferenceRow(
+                                title: "Type of Disability",
+                                options: DisabilityOption.allCases.map(\.rawValue),
+                                currentValue: journeyStore.userPreferences.disabilityType,
+                                showsEditAffordance: false
+                            ) { value in
+                                updatePreferences { $0.disabilityType = value }
+                            }
                         }
                     }
                 }
@@ -80,8 +84,32 @@ struct SettingsView: View {
             .padding(.top, 8)
             .padding(.bottom, 24)
         }
-        .background(Color.white)
+        .background(BrandColors.setupPageBackground)
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(isPresented: $showEmergencyContactSheet) {
+            EmergencyContactSheet()
+                .presentationDetents([.medium, .large])
+        }
+        .alert("Reset app?", isPresented: $showResetConfirmation) {
+            Button("Cancel", role: .cancel) {}
+            Button("Reset", role: .destructive) {
+                resetApp()
+            }
+        } message: {
+            Text("This clears your ticket, preferences, and transcript and restarts from the beginning.")
+        }
+    }
+
+    private func resetApp() {
+        journeyStore.resetAll()
+        hasCompletedSetup = false
+        hasCompletedOnboarding = false
+    }
+
+    private func updatePreferences(_ mutate: (inout UserPreferences) -> Void) {
+        var prefs = journeyStore.userPreferences
+        mutate(&prefs)
+        journeyStore.userPreferences = prefs
     }
 
     private var divider: some View {
@@ -94,30 +122,36 @@ struct SettingsView: View {
         content()
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             .shadow(color: .black.opacity(0.05), radius: 6, y: 2)
     }
 
-    private func preferenceRow(
+    private func dropdownPreferenceRow(
         title: String,
-        subtitle: String? = nil,
-        showsEdit: Bool,
-        action: @escaping () -> Void
+        options: [String],
+        currentValue: String,
+        showsEditAffordance: Bool = true,
+        onSelect: @escaping (String) -> Void
     ) -> some View {
-        Button(action: action) {
-            HStack(alignment: .center) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(title)
-                        .font(Typography.body)
-                        .foregroundStyle(BrandColors.navy)
-                    if let subtitle, !subtitle.isEmpty {
-                        Text(subtitle)
-                            .font(Typography.suggestionLabel)
-                            .foregroundStyle(BrandColors.settingsCaption)
+        Menu {
+            ForEach(options, id: \.self) { option in
+                Button {
+                    onSelect(option)
+                } label: {
+                    if currentValue == option {
+                        Label(option, systemImage: "checkmark")
+                    } else {
+                        Text(option)
                     }
                 }
+            }
+        } label: {
+            HStack(alignment: .center) {
+                Text(title)
+                    .font(Typography.body)
+                    .foregroundStyle(BrandColors.navy)
                 Spacer()
-                if showsEdit {
+                if showsEditAffordance {
                     HStack(spacing: 6) {
                         Text("Edit")
                             .font(Typography.suggestionBody)
@@ -129,6 +163,22 @@ struct SettingsView: View {
                 }
             }
             .padding(.vertical, 12)
+            .contentShape(Rectangle())
+        }
+    }
+
+    private var emergencyContactRow: some View {
+        Button {
+            showEmergencyContactSheet = true
+        } label: {
+            HStack(alignment: .center) {
+                Text("Emergency Contact")
+                    .font(Typography.body)
+                    .foregroundStyle(BrandColors.navy)
+                Spacer()
+            }
+            .padding(.vertical, 12)
+            .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }

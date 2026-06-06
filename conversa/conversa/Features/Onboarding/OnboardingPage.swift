@@ -12,17 +12,24 @@ extension OnboardingPage {
     static let pages: [OnboardingPage] = [
         OnboardingPage(
             id: 0,
-            imageName: "OnboardingLessStress",
-            title: "Less stress",
-            subtitle: "An AI-powered travel companion designed for accessible airport journeys.",
+            imageName: "Onboard1 Finish",
+            title: "Understand every conversations",
+            subtitle: "Turn spoken words into text instantly. You can follow every conversations with ease during your journey",
             primaryButtonTitle: "Next"
         ),
         OnboardingPage(
             id: 1,
-            imageName: "OnboardingPersonalized",
-            title: "Make your journey personalized.",
-            subtitle: "Your boarding pass helps the app understand where you're going and what you may need during your journey.",
-            primaryButtonTitle: "Start"
+            imageName: "Onboard2 Finish",
+            title: "Express yourself with ease",
+            subtitle: "Respond faster with smart suggestions tailored to your travel needs",
+            primaryButtonTitle: "Next"
+        ),
+        OnboardingPage(
+            id: 2,
+            imageName: "Onboard3 Finish",
+            title: "Travel with confidence",
+            subtitle: "From check-in counter to cabin crew interaction, enjoy smoother and faster conversations throughout your journey",
+            primaryButtonTitle: "Next"
         ),
     ]
 }

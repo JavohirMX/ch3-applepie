@@ -3,13 +3,14 @@ import SwiftUI
 struct SetupPrimaryButton: View {
     let title: String
     var isEnabled: Bool = true
+    var foregroundColor: Color = .white
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Text(title)
                 .font(Typography.button)
-                .foregroundStyle(isEnabled ? .white : BrandColors.navy)
+                .foregroundStyle(isEnabled ? foregroundColor : BrandColors.navy)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 16)
         }

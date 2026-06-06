@@ -30,11 +30,11 @@ struct HomeView: View {
             Spacer(minLength: 24)
 
             StampPlaceholderView()
-                .padding(.horizontal, 40)
+                .padding(.horizontal, 32)
 
             journeyLabels
                 .padding(.top, 20)
-                .padding(.horizontal, 48)
+                .padding(.horizontal, 40)
 
             Spacer(minLength: 32)
 
@@ -72,7 +72,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("from")
                     .font(Typography.journeyLabel)
-                    .foregroundStyle(BrandColors.navy)
+                    .foregroundStyle(BrandColors.secondaryText)
                 Text(journeyStore.activeTicket?.fromCityLabel ?? "—")
                     .font(Typography.journeyCity)
                     .foregroundStyle(BrandColors.navy)
@@ -81,11 +81,38 @@ struct HomeView: View {
             VStack(alignment: .trailing, spacing: 4) {
                 Text("to")
                     .font(Typography.journeyLabel)
-                    .foregroundStyle(BrandColors.navy)
+                    .foregroundStyle(BrandColors.secondaryText)
                 Text(journeyStore.activeTicket?.toCityLabel ?? "—")
                     .font(Typography.journeyCity)
                     .foregroundStyle(BrandColors.navy)
             }
         }
     }
+}
+
+#Preview {
+    HomeView(
+        onContinueJourney: {},
+        onNewJourney: {},
+        onOpenSettings: {}
+    )
+    .environment(previewHomeJourneyStore())
+}
+
+@MainActor
+private func previewHomeJourneyStore() -> JourneyStore {
+    let store = JourneyStore()
+    store.activeTicket = TicketInfo(
+        passengerName: "Aulia Badrulkamal",
+        fromAirport: "Jakarta (CGK)",
+        toAirport: "Japan (NRT)",
+        departureDate: Date(),
+        flightID: "QZ123",
+        departureTime: "12:00",
+        seat: "12E",
+        gate: "18",
+        boardingTime: "11:30"
+    )
+    store.hasActiveJourney = true
+    return store
 }

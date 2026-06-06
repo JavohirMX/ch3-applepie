@@ -23,31 +23,29 @@ struct UserPreferences: Codable, Equatable {
 }
 
 enum MealPreferenceOption: String, CaseIterable, Identifiable {
-    case vegan = "Vegan"
-    case vegetarian = "Vegetarian"
-    case halal = "Halal"
-    case kosher = "Kosher"
-    case none = "No restriction"
+    case lactose = "Lactose intolerance"
+    case gluten = "Gluten intolerance"
+    case vegetarian = "Vegetarianism"
+    case vegan = "Veganism"
+    case diabetes = "Diabetes"
+    case allergy = "Allergy"
 
     var id: String { rawValue }
 }
 
 enum SeatPreferenceOption: String, CaseIterable, Identifiable {
-    case window = "Window Seat"
-    case aisle = "Aisle Seat"
-    case middle = "Middle Seat"
-    case noPreference = "No preference"
+    case window = "Window"
+    case middle = "Middle"
+    case aisle = "Aisle"
 
     var id: String { rawValue }
 }
 
 enum DisabilityOption: String, CaseIterable, Identifiable {
-    case none = "None"
-    case deaf = "Deaf / Hard of Hearing"
-    case mobility = "Mobility"
-    case visual = "Visual"
-    case cognitive = "Cognitive"
-    case other = "Other"
+    case snhl = "SNHL"
+    case conductive = "Conductive"
+    case mixed = "Mixed"
+    case ansnd = "ANSD"
 
     var id: String { rawValue }
 }

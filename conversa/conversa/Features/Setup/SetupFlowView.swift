@@ -3,7 +3,6 @@ import SwiftUI
 struct SetupFlowView: View {
     var onComplete: () -> Void
 
-    @Environment(JourneyStore.self) private var journeyStore
     @State private var path: [SetupRoute] = []
 
     var body: some View {
@@ -18,14 +17,23 @@ struct SetupFlowView: View {
                 case .uploadTicket:
                     UploadTicketView(
                         onUploaded: {
-                            journeyStore.activeTicket = TicketInfo.mockSample
                             path.append(.ticketInformation)
+                        },
+                        onBack: {
+                            if !path.isEmpty {
+                                path.removeLast()
+                            }
                         }
                     )
                 case .ticketInformation:
                     TicketInformationView(
                         mode: .setupCompletion,
-                        onConfirm: onComplete
+                        onConfirm: onComplete,
+                        onBack: {
+                            if !path.isEmpty {
+                                path.removeLast()
+                            }
+                        }
                     )
                 }
             }

@@ -284,7 +284,7 @@ Non-dismissible sheet (`interactiveDismissDisabled`) with three detents:
 |--------|----------|-----|
 | Peek | 0.1 | Title “Text” only |
 | Medium | 0.5 | Compact field, 2 suggestions, “See more” |
-| Large | Full | `FittingTextEditor`, Clear / Flip, all suggestions |
+| Large | Full | Compact 48pt field when empty; expands on tap/suggestion; keyboard only when user taps field/editor to type; dismisses on outside tap; suggestions do not open keyboard |
 
 **Suggestions** are currently **static strings** in code (not from backend AI).
 

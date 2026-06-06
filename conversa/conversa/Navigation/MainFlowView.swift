@@ -22,26 +22,29 @@ struct MainFlowView: View {
         switch route {
         case .settings:
             SettingsView(
-                onEditBoardingPass: { path.append(.ticketInformation(mode: .edit)) },
-                onEditPreferences: { path.append(.personalPreferences(mode: .settings)) }
+                onEditBoardingPass: { path.append(.ticketInformation(mode: .edit)) }
             )
         case .uploadTicket:
             UploadTicketView(
                 isNewJourney: true,
                 onUploaded: {
-                    journeyStore.activeTicket = TicketInfo.mockSample
                     path.append(.ticketInformation(mode: .newJourney))
+                },
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
                 }
             )
         case .ticketInformation(let mode):
             TicketInformationView(
                 mode: mode,
-                onConfirm: { handleTicketConfirm(mode: mode) }
-            )
-        case .personalPreferences:
-            PersonalPreferencesView(
-                mode: .settings,
-                onContinue: { path.removeLast() }
+                onConfirm: { handleTicketConfirm(mode: mode) },
+                onBack: {
+                    if !path.isEmpty {
+                        path.removeLast()
+                    }
+                }
             )
         case .transcription:
             TranscriptionView(onExit: { path.removeLast() })

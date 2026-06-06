@@ -19,6 +19,15 @@ struct TicketInfo: Codable, Equatable {
         Self.cityLabel(from: toAirport)
     }
 
+    var formattedDepartureDate: String {
+        departureDate.formatted(
+            .dateTime
+                .day()
+                .month(.wide)
+                .year()
+        )
+    }
+
     static func cityLabel(from airport: String) -> String {
         let trimmed = airport.trimmingCharacters(in: .whitespaces)
         if let openParen = trimmed.firstIndex(of: "(") {
@@ -26,6 +35,18 @@ struct TicketInfo: Codable, Equatable {
         }
         return trimmed
     }
+
+    static let empty = TicketInfo(
+        passengerName: "",
+        fromAirport: "",
+        toAirport: "",
+        departureDate: Date(),
+        flightID: "",
+        departureTime: "",
+        seat: "",
+        gate: "",
+        boardingTime: ""
+    )
 
     static let mockSample: TicketInfo = {
         var calendar = Calendar.current

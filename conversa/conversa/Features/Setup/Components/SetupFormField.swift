@@ -2,13 +2,15 @@ import SwiftUI
 
 struct SetupFormField<Content: View>: View {
     let label: String
+    var labelColor: Color = BrandColors.navy
+    var labelFont: Font = Typography.formLabel
     @ViewBuilder var content: () -> Content
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(label)
-                .font(Typography.formLabel)
-                .foregroundStyle(BrandColors.navy)
+                .font(labelFont)
+                .foregroundStyle(labelColor)
 
             content()
         }
@@ -16,6 +18,7 @@ struct SetupFormField<Content: View>: View {
 }
 
 struct SetupFieldBackground<Content: View>: View {
+    var usesCapsule: Bool = false
     @ViewBuilder var content: () -> Content
 
     var body: some View {
@@ -23,6 +26,13 @@ struct SetupFieldBackground<Content: View>: View {
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(BrandColors.fieldBackground, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background {
+                if usesCapsule {
+                    Capsule().fill(BrandColors.fieldBackground)
+                } else {
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(BrandColors.fieldBackground)
+                }
+            }
     }
 }

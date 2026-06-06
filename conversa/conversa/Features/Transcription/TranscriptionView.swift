@@ -14,23 +14,23 @@ struct TranscriptionView: View {
     @State private var isTextSheetPresented = true
     @State private var isExiting = false
 
-    static let placeholderMessage =
-        "I am deaf, I use this device to communicate with you. Say what you want to say to me now."
-
     private var isSheetCollapsed: Bool {
         sheetDetent == .fraction(0.1)
+    }
+
+    private var isSheetFullyExpanded: Bool {
+        sheetDetent == .large
+    }
+
+    private var isMicIdle: Bool {
+        !speechService.isListening
     }
 
     var body: some View {
         GeometryReader { geometry in
             ZStack {
-                LinearGradient(
-                    colors: [BrandColors.listeningGradientTop,
-                             BrandColors.listeningGradientBottom],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                Color.white
+                    .ignoresSafeArea()
 
                 VStack(spacing: 0) {
                     HStack {
@@ -43,8 +43,17 @@ struct TranscriptionView: View {
                     upperContent
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                         .padding(.horizontal, 24)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            Keyboard.dismiss()
+                        }
 
-                    MicControlButton(isListening: speechService.isListening, action: handleMicTap)
+                    MicControlButton(
+                        isListening: speechService.isListening,
+                        isProminent: sheetDetent == .fraction(0.5) && isMicIdle,
+                        showsBreathing: isMicIdle && (sheetDetent == .fraction(0.5) || isSheetCollapsed),
+                        action: handleMicTap
+                    )
                         .padding(.bottom, 24)
                 }
                 .padding(.bottom, sheetBottomInset(for: geometry.size.height))
@@ -105,14 +114,10 @@ struct TranscriptionView: View {
             TranscriptDisplayView(text: savedTranscript)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         } else if isSheetCollapsed {
-            ScrollView {
-                Text(Self.placeholderMessage)
-                    .font(Typography.transcriptPlaceholder)
-                    .foregroundStyle(BrandColors.transcriptPlaceholder)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            TranscriptionPlaceholderView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        } else if isSheetFullyExpanded {
+            Spacer(minLength: 0)
         } else {
             VStack {
                 Text("Start Listening")
@@ -207,17 +212,15 @@ struct TranscriptionView: View {
 }
 
 #Preview("Placeholder copy") {
-    TranscriptDisplayView(
-        text: TranscriptionView.placeholderMessage,
-        textColor: BrandColors.transcriptPlaceholder
-    )
-    .frame(width: 360, height: 420)
-    .background(BrandColors.listeningGradientTop)
+    TranscriptionPlaceholderView()
+        .padding(.horizontal, 24)
+        .frame(width: 390, height: 700, alignment: .topLeading)
+        .background(Color.white)
 }
 
 #Preview("Listening placeholder") {
     LiveTranscriptArea(liveTranscript: "")
         .frame(height: 200)
         .padding()
-        .background(BrandColors.listeningGradientTop)
+        .background(Color.white)
 }
